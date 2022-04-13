@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const { validationResult } = require("express-validator");
 const { nanoid } = require("nanoid");
 
 const registerForm = (req, res) => {
@@ -6,7 +7,9 @@ const registerForm = (req, res) => {
 };
 
 const registerUser = async (req, res) => {
-  console.log(req.body);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.json(errors);
+
   const { userName, email, password } = req.body;
   try {
     const existingUser = await User.findOne({ email: email });
@@ -47,6 +50,9 @@ const loginForm = (req, res) => {
 };
 
 const loginUser = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.json(errors);
+
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
