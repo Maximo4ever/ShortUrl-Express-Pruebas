@@ -1,1 +1,23 @@
-<h1>Login</h1>
+<h1>Login de usuarios</h1>
+
+<div class="col">
+  <div class="col-md-8">
+    <form action="/auth/login" method="POST">
+      <input 
+        type="text" 
+        name="email" 
+        placeholder="Ingrese email" 
+        class="form-control mb-2"
+        value="Bluuweb@test.com"
+      >
+      <input 
+        type="password" 
+        name="password" 
+        placeholder="Ingrese password" 
+        class="form-control mb-2"
+        value="123456"
+      >
+      <button class="btn btn-primary" type="submit">Acceder</button>
+    </form>
+  </div>
+</div>
