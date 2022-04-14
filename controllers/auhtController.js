@@ -3,18 +3,22 @@ const { validationResult } = require("express-validator");
 const { nanoid } = require("nanoid");
 
 const registerForm = (req, res) => {
-  res.render("register");
+  res.render("register", { mensajes: req.flash("mensajes") });
 };
-
 const registerUser = async (req, res) => {
+  // Si existe un error, muestralo
   const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.json(errors);
-
+  if (!errors.isEmpty()) {
+    req.flash("mensajes", errors.array());
+    return res.redirect("/auth/register");
+  }
+  // Registrar usario:
   const { userName, email, password } = req.body;
   try {
+    // Si el usuario ya existe, retorna un error
     const existingUser = await User.findOne({ email: email });
-    if (existingUser) throw new Error("Ya existe el usuario");
-
+    if (existingUser) throw new Error("El usuario ya existe");
+    // De lo contrario, registra el NUEVO usuario
     const user = new User({
       userName,
       email,
@@ -22,9 +26,13 @@ const registerUser = async (req, res) => {
       tokenConfirm: nanoid(),
     });
     await user.save();
+    req.flash("mensajes", [
+      { msg: "Confirme su cuenta con el email que le hemos enviado" },
+    ]);
     res.redirect("/auth/login");
   } catch (error) {
-    res.json({ error: error.message });
+    req.flash("mensajes", [{ msg: error.message }]);
+    return res.redirect("/auth/register");
   }
 };
 
@@ -33,46 +41,61 @@ const confirmarCuenta = async (req, res) => {
   try {
     const user = await User.findOne({ tokenConfirm: token });
     if (!user) throw new Error("No existe este usuario");
-
+    // Confirma la cuenta relacionada al token dado
     user.cuentaConfirmada = true;
     user.tokenConfirm = null;
     await user.save();
-
-    // Enviar correo electronico con la confirmacion de la cuenta
+    // **Envia correo electronico con la confirmacion de la cuenta (prox)**
+    req.flash("mensajes", [
+      { msg: "Confirme su cuenta con el email que le hemos enviado" },
+    ]);
     res.redirect("/auth/login");
   } catch (error) {
-    res.json({ error: error.message });
+    req.flash("mensajes", [{ msg: error.message }]);
+    return res.redirect("/auth/login");
   }
 };
 
 const loginForm = (req, res) => {
-  res.render("login");
+  res.render("login", { mensajes: req.flash("mensajes") });
 };
-
 const loginUser = async (req, res) => {
+  // Si existe un error, muestralo
   const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.json(errors);
-
+  if (!errors.isEmpty()) {
+    req.flash("mensajes", errors.array());
+    return res.redirect("/auth/login");
+  }
+  // Loguear usuario:
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
     if (!user) throw new Error("El Email no existe");
     if (!user.cuentaConfirmada)
-      throw new Error("Confirme la cuenta antes de entrar");
+      throw new Error("Confirme la cuenta antes de loguearse");
     if (!(await user.comparePassword(password)))
       throw new Error("Contraseña invalida");
-
-    res.redirect("/");
+    // Crea la sesion de usuario con passport
+    req.login(user, function (err) {
+      if (err) throw new Error("Error al crear la sesion");
+      // Redireccionar a las URLS
+      return res.redirect("/");
+    });
   } catch (error) {
-    console.log(error);
-    res.send(error.message);
+    req.flash("mensajes", [{ msg: error.message }]);
+    return res.redirect("/auth/login");
   }
+};
+const cerrarSesion = (req, res) => {
+  req.logout();
+  return res.redirect("/");
 };
 
 module.exports = {
-  loginForm,
   registerForm,
   registerUser,
   confirmarCuenta,
+  loginForm,
   loginUser,
+  cerrarSesion,
 };

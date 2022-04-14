@@ -6,6 +6,7 @@ const {
   confirmarCuenta,
   loginForm,
   loginUser,
+  cerrarSesion,
 } = require("../controllers/auhtController");
 const router = express.Router();
 const validaciones = [
@@ -35,5 +36,6 @@ router.post(
     .escape(),
   loginUser
 );
+router.get("/logout", cerrarSesion);
 
 module.exports = router;

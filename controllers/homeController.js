@@ -4,10 +4,9 @@ const { nanoid } = require("nanoid");
 const leerUrls = async (req, res) => {
   try {
     const urls = await Url.find().lean();
-    res.render("home", { urls: urls });
+    res.render("home", { urls: urls, mensajes: req.flash("mensajes") });
   } catch (error) {
     console.log(error);
-    res.send("Fallo algo");
   }
 };
 
@@ -19,7 +18,6 @@ const agregarUrl = async (req, res) => {
     res.redirect("/");
   } catch (error) {
     console.log(error);
-    res.send("Algo fallo");
   }
 };
 
@@ -30,7 +28,10 @@ const eliminarUrl = async (req, res) => {
     res.redirect("/");
   } catch (error) {
     console.log(error);
-    res.send("Algo fallo");
+    req.flash("mensajes", [
+      { msg: "Algo fallo, no se puedo eliminar la URL con exito" },
+    ]);
+    return res.redirect("/");
   }
 };
 
@@ -41,10 +42,10 @@ const editarUrlForm = async (req, res) => {
     res.render("home", { url });
   } catch (error) {
     console.log(error);
-    res.send("Error, algo fallo");
+    req.flash("mensajes", [{ msg: "Algo fallo, no se puede editar la URL" }]);
+    return res.redirect("/");
   }
 };
-
 const editarUrl = async (req, res) => {
   const { id } = req.params;
   const { origin } = req.body;
@@ -53,7 +54,10 @@ const editarUrl = async (req, res) => {
     res.redirect("/");
   } catch (error) {
     console.log(error);
-    res.send("Error, algo fallo");
+    req.flash("mensajes", [
+      { msg: "Algo fallo, no se puedo editar la URL con exito" },
+    ]);
+    return res.redirect("/");
   }
 };
 
@@ -69,7 +73,8 @@ const redireccionamiento = async (req, res) => {
     res.redirect(urlDB.origin);
   } catch (error) {
     console.log(error);
-    res.send("Algo fallo");
+    req.flash("mensajes", [{ msg: error }]);
+    return res.redirect("/");
   }
 };
 
