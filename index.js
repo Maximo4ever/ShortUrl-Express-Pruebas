@@ -3,6 +3,8 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
 const { create } = require("express-handlebars");
+const csrf = require("csurf");
+
 const User = require("./models/User");
 require("dotenv").config();
 require("./database/db");
@@ -50,6 +52,12 @@ app.set("view engine", ".hbs");
 app.set("views", "./views");
 
 app.use(express.urlencoded({ extended: true }));
+app.use(csrf());
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
 app.use("/", require("./routes/home"));
 app.use("/auth", require("./routes/auth"));
 app.use(express.static(__dirname + "/public"));

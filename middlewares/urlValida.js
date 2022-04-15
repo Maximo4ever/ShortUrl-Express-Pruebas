@@ -10,14 +10,19 @@ const urlValidar = (req, res, next) => {
         urlFrontend.protocol === "http:" ||
         urlFrontend.protocol === "https:"
       ) {
-        console.log("Protocolo http o https, paso todo alb");
         return next();
       }
+      throw new Error(
+        "URL invalida, Ingrese una URL con el protocolo http o https"
+      );
     }
-    throw new Error("URL no válida");
+    throw new Error("URL invalida, intente con otra URL");
   } catch (error) {
-    // console.log(error);
-    req.flash("mensajes", [{ msg: error.message }]);
+    if (error.message === "Invalid URL") {
+      req.flash("mensajes", [{ msg: "URL invalida, intente con otra URL" }]);
+    } else {
+      req.flash("mensajes", [{ msg: error.message }]);
+    }
     return res.redirect("/");
   }
 };
