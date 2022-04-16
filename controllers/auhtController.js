@@ -5,7 +5,7 @@ const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 const registerForm = (req, res) => {
-  res.render("register", { mensajes: req.flash("mensajes") });
+  res.render("register");
 };
 const registerUser = async (req, res) => {
   // Si existe un error, muestralo
@@ -73,7 +73,7 @@ const confirmarCuenta = async (req, res) => {
 };
 
 const loginForm = (req, res) => {
-  res.render("login", { mensajes: req.flash("mensajes") });
+  res.render("login");
 };
 const loginUser = async (req, res) => {
   // Si existe un error, muestralo

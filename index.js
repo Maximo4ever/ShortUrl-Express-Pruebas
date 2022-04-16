@@ -19,49 +19,48 @@ app.use(
     name: "secret-name-bluuweb",
   })
 );
-
+// Mensajes flash
 app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-// Preguntas
+// Agrega la propiedad req.user
 passport.serializeUser((user, done) =>
   done(null, { id: user._id, userName: user.userName })
-); // req.user
+);
 passport.deserializeUser(async (user, done) => {
   const userDB = await User.findById(user.id);
   return done(null, { id: userDB._id, userName: userDB.userName });
 });
 
-app.get("/mensaje-flash", (req, res) => {
-  res.json(req.flash("mensaje" || "Sin mensaje flash"));
-});
-app.get("/crear-mensaje", (req, res) => {
-  req.flash("mensaje", "Este es un mensaje de error unu");
-  res.redirect("/mensaje-flash");
-});
-
+// Render hbs
 const hbs = create({
   extname: ".hbs",
   partialsDir: ["views/components"],
 });
-
 app.engine(".hbs", hbs.engine);
 app.set("view engine", ".hbs");
 app.set("views", "./views");
 
+// Permite usar params
 app.use(express.urlencoded({ extended: true }));
+
+// Seguridad
 app.use(csrf());
+
 app.use((req, res, next) => {
+  // Acceso global a los hbs
   res.locals.csrfToken = req.csrfToken();
+  res.locals.mensajes = req.flash("mensajes");
   next();
 });
 
+// Rutas
 app.use("/", require("./routes/home"));
 app.use("/auth", require("./routes/auth"));
 app.use(express.static(__dirname + "/public"));
 
+// Puesto del servidor
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log("Servidor andando!!!");

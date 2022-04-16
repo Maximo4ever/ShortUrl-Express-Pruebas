@@ -1,22 +1,24 @@
-<h1>Login de usuarios</h1>
 
-<div class="col-md-8">
-  <form action="/auth/login" method="POST">
-    <input type="hidden" name="_csrf" value="{{csrfToken}}" />
-    <input 
-      type="text" 
-      name="email" 
-      placeholder="Ingrese email" 
-      class="form-control mb-2"
-      value="Bluuweb@test.com"
-    >
-    <input 
-      type="password" 
-      name="password" 
-      placeholder="Ingrese password" 
-      class="form-control mb-2"
-      value="123456"
-    >
-    <button class="btn btn-primary" type="submit">Acceder</button>
-  </form>
+<div class="row justify-content-center align-items-center mt-5">
+  <div class="col-lg-6">
+    <h1>Login de usuarios</h1>
+    <form action="/auth/login" method="POST">
+      <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+      <input 
+        type="text" 
+        name="email" 
+        placeholder="Ingrese email" 
+        class="form-control mb-2"
+        value="Bluuweb@test.com"
+      >
+      <input 
+        type="password" 
+        name="password" 
+        placeholder="Ingrese password" 
+        class="form-control mb-2"
+        value="123456"
+      >
+      <button class="btn btn-primary mt-1" type="submit">Acceder</button>
+    </form>
+  </div>
 </div>

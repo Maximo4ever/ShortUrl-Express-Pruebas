@@ -1,0 +1,20 @@
+<div class="row justify-content-center align-items-center mt-5">
+  <div class="col-md-6 text-center p-2">
+    <h1 class="fs-2">{{user.userName}}</h1>
+    <p class="fs-5">Edita aqui tu perfil</p>
+    <div class="my-2">
+      {{#if imagen}}
+        <img class="img-fluid rounded-circle" src="/img/{{imagen}}" alt="foto de perfil" style="width: 220px; height:220px">
+      {{else}}
+        <img class="img-fluid rounded-circle" src="/img/default.jpg" alt="foto de perfil" style="width: 220px; height:220px">
+      {{/if}}
+    </div>
+      <div class="mt-4">
+        <span class="fs-6 text-start d-block" style="color: #717273d8">Cambiar imagen de perfil</span>
+        <form action="/perfil?_csrf={{csrfToken}}" method="post" enctype="multipart/form-data" class="input-group">
+          <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload" name="myFile">
+          <button class="btn btn-outline-secondary" type="submit" id="inputGroupFileAddon04">Cambiar</button>
+        </form>
+      </div>
+  </div>
+</div>

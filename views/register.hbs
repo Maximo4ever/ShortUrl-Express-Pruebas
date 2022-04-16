@@ -1,36 +1,38 @@
-<h1>Registro de Usuarios nuevos</h1>
 
-<div class="col-md-8">
-  <form action="/auth/register" method="POST">
-    <input type="hidden" name="_csrf" value="{{csrfToken}}" />
-    <input 
-      type="text" 
-      name="userName" 
-      placeholder="Ingrese username" 
-      class="form-control mb-2"
-      value="Bluuweb"
-    >
-    <input 
-      type="text" 
-      name="email" 
-      placeholder="Ingrese email" 
-      class="form-control mb-2"
-      value="Bluuweb@test.com"
-    >
-    <input 
-      type="password" 
-      name="password" 
-      placeholder="Ingrese password" 
-      class="form-control mb-2"
-      value="123456"
-    >
-    <input 
-      type="password" 
-      name="repassword" 
-      placeholder="Repetir password" 
-      class="form-control mb-2"
-      value="123456"
-    >
-    <button class="btn btn-primary" type="submit">Registrar usuario</button>
-  </form>
+<div class="row align-items-center justify-content-center mt-5">
+  <div class="col-md-6">
+  <h1>Registro de Usuarios nuevos</h1>
+    <form action="/auth/register" method="POST">
+      <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+      <input 
+        type="text" 
+        name="userName" 
+        placeholder="Ingrese username" 
+        class="form-control mb-2"
+        value="Bluuweb"
+      >
+      <input 
+        type="text" 
+        name="email" 
+        placeholder="Ingrese email" 
+        class="form-control mb-2"
+        value="Bluuweb@test.com"
+      >
+      <input 
+        type="password" 
+        name="password" 
+        placeholder="Ingrese password" 
+        class="form-control mb-2"
+        value="123456"
+      >
+      <input 
+        type="password" 
+        name="repassword" 
+        placeholder="Repetir password" 
+        class="form-control mb-2"
+        value="123456"
+      >
+      <button class="btn btn-primary mt-1" type="submit">Registrar usuario</button>
+    </form>
+  </div>
 </div>
