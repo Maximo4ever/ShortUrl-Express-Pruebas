@@ -1,22 +1,40 @@
 const express = require("express");
+const cors = require("cors");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
+const mongoSanitize = require("express-mongo-sanitize");
 const { create } = require("express-handlebars");
 const csrf = require("csurf");
 
 const User = require("./models/User");
 require("dotenv").config();
-require("./database/db");
+const clientDB = require("./database/db");
 
 const app = express();
 
+const corsOptions = {
+  credentials: true,
+  origin: process.env.PATH_HEROKU || "*",
+  methods: ["GET", "POST"],
+};
+app.use(cors(corsOptions));
+
 app.use(
   session({
-    secret: "keyboard cat",
+    secret: process.env.SECRET_SESSION,
     resave: false,
     saveUninitialized: false,
-    name: "secret-name-bluuweb",
+    name: "session-user",
+    store: MongoStore.create({
+      clientPromise: clientDB,
+      dbName: process.env.DBNAME,
+    }),
+    cookie: {
+      secure: process.env.MODE === "production",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    },
   })
 );
 // Mensajes flash
@@ -47,6 +65,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Seguridad
 app.use(csrf());
+app.use(mongoSanitize());
 
 app.use((req, res, next) => {
   // Acceso global a los hbs

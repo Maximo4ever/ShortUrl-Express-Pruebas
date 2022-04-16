@@ -41,7 +41,11 @@ const registerUser = async (req, res) => {
       from: '"Fred Foo 👻" <foo@example.com>', // sender address
       to: user.email, // list of receivers
       subject: "Verificar cuenta", // Subject line
-      html: `<a href="http://localhost:5000/auth/confirmar/${user.tokenConfirm}">Click aqui</a>`, // html body
+      html: `
+      <a href="${
+        process.env.PATH_HEROKU || "http://localhost:5000/"
+      }/auth/confirmar/${user.tokenConfirm}">Click aqui</a>
+      `, // html body
       text: "Para verificar su cuenta", // plain text body
     });
 
